@@ -2,250 +2,28 @@
 <html >
   <head>
     <meta charset="UTF-8">
-    <title>EvoMe </title>
+    <title>EvoMe</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
 </head>
   </head>
+
   <body>
-    <div id="container">
-  <input type="file" id="files" name="files[]" multiple />
-  <output id="list"></output>
-  <canvas id="c"></canvas>
-  <script>
-    function handleFileSelect(evt) {
-      var files = evt.target.files; // FileList object
 
-      // Loop through the FileList and render image files as thumbnails.
-      for (var i = 0, f; f = files[i]; i++) {
-
-        // Only process image files.
-        if (!f.type.match('image.*')) {
-          continue;
-        }
-
-        var reader = new FileReader();
-
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-          return function(e) {
-            // Render thumbnail.
-            var span = document.createElement('span');
-            span.innerHTML = ['<img id="target" alt="" src="', e.target.result,
-              '" title="', escape(theFile.name), '"/>'
-            ].join('');
-            document.getElementById('list').insertBefore(span, null);
-          };
-        })(f);
-
-        // Read in the image file as a data URL.
-        reader.readAsDataURL(f);
-      }
-    }
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
-  </script>
-
-  <div id="controls">
-    <div class="info">
-      <table>
-        <tr>
-          <td>FITNESS:</td>
-          <td><span id="fitness">0</span></td>
-        </tr>
-        <tr>
-          <td>GENERATION:</td>
-          <td><span id="generation">0</span></td>
-        </tr>
-        <tr>
-          <td>POLYGONS:</td>
-          <td><span id="polygons">0</span></td>
-        </tr>
-      </table>
-    </div>
-    <br/>
-    <ul>
-      <li><a href="javascript:void(0);" id="start">Start</a></li>
-      <li><a href="javascript:void(0);" id="stop">Stop</a></li>
-      <li><a href="javascript:void(0);" id="reset">Reset</a></li>
-    </ul>
-  </div>
-  <div id="display"></div>
-</div>
-
-<title>Kernel Density Estimation</title>
- <script src="//d3js.org/d3.v3.min.js"></script>
-  <script>
-    var faithfulData = [88,88,88,88,88,88,88,85,51,85,54,84,78,47,83,52,62,84,52,79,51,47,78,69,74,83,55,76,78,79,73,77,66,80,74,52,48,80,59,90,80,58,84,58,73,83,64,53,82,59,75,90,54,80,54,83,71,64,77,81,59,84,48,82,60,92,78,78,65,73,82,56,79,71,62,76,60,78,76,83,75,82,70,65,73,88,76,80,48,86,60,90,50,78,63,72,84,75,51,82,62,88,49,83,81,47,84,52,86,81,75,59,89,79,59,81,50,85,59,87,53,69,77,56,88,81,45,82,55,90,45,83,56,89,46,82,51,86,53,79,81,60,82,77,76,59,80,49,96,53,77,77,65,81,71,70,81,93,53,89,45,86,58,78,66,76,63,88,52,93,49,57,77,68,81,81,73,50,85,74,55,77,83,83,51,78,84,46,83,55,81,57,76,84,77,81,87,77,51,78,60,82,91,53,78,46,77,84,49,83,71,80,49,75,64,76,53,94,55,76,50,82,54,75,78,79,78,78,70,79,70,54,86,50,90,54,54,77,79,64,75,47,86,63,85,82,57,82,67,74,54,83,73,73,88,80,71,83,56,79,78,84,58,83,43,60,75,81,46,90,46,74];
-    
-    
-    var margin = {top: 20, right: 30, bottom: 30, left: 40},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-    
-    var x = d3.scale.linear()
-        .domain([0, 100])
-        .range([0, width]);
-    
-    var y = d3.scale.linear()
-        .domain([0, .1])
-        .range([height, 0]);
-    
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-    
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .tickFormat(d3.format("%"));
-    
-    var line = d3.svg.line()
-        .x(function(d) { return x(d[0]); })
-        .y(function(d) { return y(d[1]); });
-    
-    var histogram = d3.layout.histogram()
-        .frequency(false)
-        .bins(x.ticks(40));
-    
-    var svg = d3.select("body").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text("Precent RGB Error (%)");
-    
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-    
-    //d3.json("faithful.json", function(error, faithful) {
-    //  if (error) throw error;
-    
-      var data = histogram(faithfulData),
-          kde = kernelDensityEstimator(epanechnikovKernel(7), x.ticks(100));
-    
-      svg.selectAll(".bar")
-          .data(data)
-        .enter().insert("rect", ".axis")
-          .attr("class", "bar")
-          .attr("x", function(d) { return x(d.x) + 1; })
-          .attr("y", function(d) { return y(d.y); })
-          .attr("width", x(data[0].dx + data[0].x) - x(data[0].x) - 1)
-          .attr("height", function(d) { return height - y(d.y); });
-    
-      svg.append("path")
-          .datum(kde(faithfulData))
-          .attr("class", "line")
-          .attr("d", line);
-    //});
-    
-    function kernelDensityEstimator(kernel, x) {
-      return function(sample) {
-        return x.map(function(x) {
-          return [x, d3.mean(sample, function(v) { return kernel(x - v); })];
-        });
-      };
-    }
-    
-    function epanechnikovKernel(scale) {
-      return function(u) {
-        return Math.abs(u /= scale) <= 1 ? .75 * (1 - u * u) / scale : 0;
-      };
-    }
-  </script>
-
-<script type="text/javascript">
-  var fitOutput = document.getElementById('fitness'),
-    genOutput = document.getElementById('generation'),
-    polyOutput = document.getElementById('polygons');
-  //===================================  
-  var displayEvolution = function(evo, startTime) {
-    var d = document.createElement('div'),
-      c = document.createElement('canvas'),
-      display = document.getElementById('display');
-
-    c.width = evoLisa.t.width;
-    c.height = evoLisa.t.height;
-    c.style.width = c.width * 3 / 5 + "px";
-    c.style.height = c.height * 3 / 5 + "px";
-    evo.draw(c);
-    d.className = "container";
-    var gen = evoLisa.generation,
-      fit = evoLisa.dna.fit,
-      timeTaken = new Date().getTime() - startTime;
-    d.innerHTML = "<div class='info'>g: " + gen + "<br/>f: " + fit + "<br />t: " + timeTaken + "</div>";
-    d.appendChild(c);
-    display.appendChild(d);
-  };
-
-  var go = function() {
-    var t = document.getElementById('target'),
-      c = document.getElementById('c'),
-      evoLisa = new EvoLisa(t, c);
-    return evoLisa;
-  }
-
-  var evoLisa,
-    start = document.getElementById('start'),
-    stop = document.getElementById('stop'),
-    reset = document.getElementById('reset');
-
-  // set up our buttons
-  start.onclick = function() {
-    if (typeof evoLisa === "undefined")
-      evoLisa = go();
-
-    var startTime = new Date().getTime();
-
-    evoLisa.start(function() {
-      // update generation
-      genOutput.innerHTML = evoLisa.generation;
-      fitOutput.innerHTML = evoLisa.dna.fit;
-      polyOutput.innerHTML = evoLisa.dna.dna.length;
-      // shall we display another snapshot?
-      if (evoLisa.generation % 500 == 0) {
-        displayEvolution(evoLisa, startTime);
-      }
-    });
-  };
-  //=======================================
-  stop.onclick = function() {
-    evoLisa.stop();
-  };
-  //========================================
-  reset.onclick = function() {
-    evoLisa.stop();
-    evoLisa = go();
-    setTimeout(function() {
-      start.click()
-    }, 50);
-    display.innerHTML = '';
-  };
-</script>
-<script src="js/index.js"></script>  
-     
 <div id="wrap">
 	<div id="header">
 		<div id="headerlinks">
-		<a href="#" title="Portfolio">Portfolio</a>
-		<a href="#" title="Blog">Blog</a>
-		<a href="#" title="About Us">About Us</a>
-		<a href="#" title="Contact">Contact</a>
+		<a href="#" title="Portfolio">-EvoMe!-</a>
+		<a href="#" title="Blog">-Gallery-    </a>
+		<a title="About Us">About:</a>
+		<a href="#" title="Contact">|E.C.| </a>
+        <a href="#" title="Contact">|EvoLisa| </a>
+        <a href="#" title="Contact">|Creator|</a>
 		</div>
-		<h1><a href="#">Theme #4</a></h1>
+		<h1><a href="#">EvoMe - Genetic Image Processing</a></h1>
 	</div>
 
-	<div id="sidebar">
+	<div id="sidebar"> <!--SideBar Section-->
 		<h2>Last Posts:</h2>
 		<div class="box">
 		<ul>
@@ -274,8 +52,135 @@
 		</div>
 	</div>
 
-	<div id="content">
-		<h2>Lorem Ipsum <span class="post-span">- by Maurice from 09 Feb 2013</span></h2>
+	<div id="content"> <!--Paragraph Section-->
+
+        <div id="container"> <!--Target img, Canvas & Controls Container-->
+            <input type="file" id="files" name="files[]" multiple />
+            <output id="list"></output>
+            <canvas id="c"></canvas>
+
+            <div id="controls">
+                <!-- Evo metrics & control panel-->
+                <div class="info">
+                    <table>
+                        <tr>
+                            <td>FITNESS:</td>
+                            <td><span id="fitness">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>GENERATION:</td>
+                            <td><span id="generation">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>POLYGONS:</td>
+                            <td><span id="polygons">0</span></td>
+                        </tr>
+                    </table>
+                </div>
+                <br/>
+                <ul>
+                    <li><a href="javascript:void(0);" id="start">Start</a></li>
+                    <li><a href="javascript:void(0);" id="stop">Stop</a></li>
+                    <li><a href="javascript:void(0);" id="reset">Reset</a></li>
+                </ul>
+            </div>
+            <div id="display"></div>
+        </div>
+
+        <title>Kernel Density Estimation</title>
+
+        <!--Kernel Plot script, needs to be in position of display!-->
+        <script>
+            var faithfulData = [88,88,88,88,88,88,88,85,51,85,54,84,78,47,83,52,62,84,52,79,51,47,78,69,74,83,55,76,78,79,73,77,66,80,74,52,48,80,59,90,80,58,84,58,73,83,64,53,82,59,75,90,54,80,54,83,71,64,77,81,59,84,48,82,60,92,78,78,65,73,82,56,79,71,62,76,60,78,76,83,75,82,70,65,73,88,76,80,48,86,60,90,50,78,63,72,84,75,51,82,62,88,49,83,81,47,84,52,86,81,75,59,89,79,59,81,50,85,59,87,53,69,77,56,88,81,45,82,55,90,45,83,56,89,46,82,51,86,53,79,81,60,82,77,76,59,80,49,96,53,77,77,65,81,71,70,81,93,53,89,45,86,58,78,66,76,63,88,52,93,49,57,77,68,81,81,73,50,85,74,55,77,83,83,51,78,84,46,83,55,81,57,76,84,77,81,87,77,51,78,60,82,91,53,78,46,77,84,49,83,71,80,49,75,64,76,53,94,55,76,50,82,54,75,78,79,78,78,70,79,70,54,86,50,90,54,54,77,79,64,75,47,86,63,85,82,57,82,67,74,54,83,73,73,88,80,71,83,56,79,78,84,58,83,43,60,75,81,46,90,46,74];
+
+
+            var margin = {top: 20, right: 30, bottom: 30, left: 40},
+                    width = 960 - margin.left - margin.right,
+                    height = 500 - margin.top - margin.bottom;
+
+            var x = d3.scale.linear()
+                    .domain([0, 100])
+                    .range([0, width]);
+
+            var y = d3.scale.linear()
+                    .domain([0, .1])
+                    .range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .orient("left")
+                    .tickFormat(d3.format("%"));
+
+            var line = d3.svg.line()
+                    .x(function(d) { return x(d[0]); })
+                    .y(function(d) { return y(d[1]); });
+
+            var histogram = d3.layout.histogram()
+                    .frequency(false)
+                    .bins(x.ticks(40));
+
+            var svg = d3.select("body").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis)
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", width)
+                    .attr("y", -6)
+                    .style("text-anchor", "end")
+                    .text("Precent RGB Error (%)");
+
+            svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis);
+
+            //d3.json("faithful.json", function(error, faithful) {
+            //  if (error) throw error;
+
+            var data = histogram(faithfulData),
+                    kde = kernelDensityEstimator(epanechnikovKernel(7), x.ticks(100));
+
+            svg.selectAll(".bar")
+                    .data(data)
+                    .enter().insert("rect", ".axis")
+                    .attr("class", "bar")
+                    .attr("x", function(d) { return x(d.x) + 1; })
+                    .attr("y", function(d) { return y(d.y); })
+                    .attr("width", x(data[0].dx + data[0].x) - x(data[0].x) - 1)
+                    .attr("height", function(d) { return height - y(d.y); });
+
+            svg.append("path")
+                    .datum(kde(faithfulData))
+                    .attr("class", "line")
+                    .attr("d", line);
+            //});
+
+            function kernelDensityEstimator(kernel, x) {
+                return function(sample) {
+                    return x.map(function(x) {
+                        return [x, d3.mean(sample, function(v) { return kernel(x - v); })];
+                    });
+                };
+            }
+
+            function epanechnikovKernel(scale) {
+                return function(u) {
+                    return Math.abs(u /= scale) <= 1 ? .75 * (1 - u * u) / scale : 0;
+                };
+            }
+        </script>
+
+        <h2>Lorem Ipsum <span class="post-span">- by Maurice from 09 Feb 2013</span></h2>
 		<img src="img/placeholder/technics-q-c-680-280-4.jpg" class="post-img" alt="Bild" />
 		<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
 
@@ -289,13 +194,125 @@
 	</div>
 
 	<div id="footer">
-		<div style="float: right;">
+        Nathan Perfetti | 2016 <a target="_blank" href="http://perfettiful.github.io" title="Perfettiful's Github">Perfettiful</a>
+        <div style="float: right;">
 		<a href="#" title="Contact Us"><img src="img/contact.gif" alt="Contact" /></a>
 		<a href="#" title="Sitemap"><img src="img/sitemap.gif" alt="Sitemap" /></a>
 		<a href="#" title="Rss Feed"><img src="img/rss.png" alt="Rss Feed" /></a>
 		</div>
-		Theme #4 &copy; 2013 | <!-- You can use it for practically any personal or commercial use so long as you keep our footer credit links intact. -->Theme by <a target="_blank" href="http://codingdev.de" title="CodingDev">CodingDev</a>
 	</div>
-</div>
+</div> <!--End Wrapper div-->
   </body>
+
+<!--Scripts-->
+<script src="//d3js.org/d3.v3.min.js"></script> <!--D3 library-->
+
+  <!--64 bit Data img URL converter-->
+  <script>
+      function handleFileSelect(evt) {
+          var files = evt.target.files; // FileList object
+
+          // Loop through the FileList and render image files as thumbnails.
+          for (var i = 0, f; f = files[i]; i++) {
+
+              // Only process image files.
+              if (!f.type.match('image.*')) {
+                  continue;
+              }
+
+              var reader = new FileReader();
+
+              // Closure to capture the file information.
+              reader.onload = (function(theFile) {
+                  return function(e) {
+                      // Render thumbnail.
+                      var span = document.createElement('span');
+                      span.innerHTML = ['<img id="target" alt="" src="', e.target.result,
+                          '" title="', escape(theFile.name), '"/>'
+                      ].join('');
+                      document.getElementById('list').insertBefore(span, null);
+                  };
+              })(f);
+
+              // Read in the image file as a data URL.
+              reader.readAsDataURL(f);
+          }
+      }
+      document.getElementById('files').addEventListener('change', handleFileSelect, false);
+  </script>
+
+  <!--EvoMe html canvas & controls script-->
+  <script type="text/javascript">//Controls Script
+  var fitOutput = document.getElementById('fitness'),
+          genOutput = document.getElementById('generation'),
+          polyOutput = document.getElementById('polygons');
+  //===================================
+  var displayEvolution = function(evo, startTime) {
+      var d = document.createElement('div'),
+              c = document.createElement('canvas'),
+              display = document.getElementById('display');
+
+      c.width = evoLisa.t.width;
+      c.height = evoLisa.t.height;
+      c.style.width = c.width * 3 / 5 + "px";
+      c.style.height = c.height * 3 / 5 + "px";
+      evo.draw(c);
+      d.className = "container";
+      var gen = evoLisa.generation,
+              fit = evoLisa.dna.fit,
+              timeTaken = new Date().getTime() - startTime;
+      d.innerHTML = "<div class='info'>g: " + gen + "<br/>f: " + fit + "<br />t: " + timeTaken + "</div>";
+      d.appendChild(c);
+      display.appendChild(d);
+  };
+
+  var go = function() {
+      var t = document.getElementById('target'),
+              c = document.getElementById('c'),
+              evoLisa = new EvoLisa(t, c);
+      return evoLisa;
+  }
+
+  var evoLisa,
+          start = document.getElementById('start'),
+          stop = document.getElementById('stop'),
+          reset = document.getElementById('reset');
+
+  // set up our buttons
+  start.onclick = function() {
+      if (typeof evoLisa === "undefined")
+          evoLisa = go();
+
+      var startTime = new Date().getTime();
+
+      evoLisa.start(function() {
+          // update generation
+          genOutput.innerHTML = evoLisa.generation;
+          fitOutput.innerHTML = evoLisa.dna.fit;
+          polyOutput.innerHTML = evoLisa.dna.dna.length;
+          // shall we display another snapshot?
+          if (evoLisa.generation % 500 == 0) {
+              displayEvolution(evoLisa, startTime);
+          }
+      });
+  };
+  //=======================================
+  stop.onclick = function() {
+      evoLisa.stop();
+  };
+  //========================================
+  reset.onclick = function() {
+      evoLisa.stop();
+      evoLisa = go();
+      setTimeout(function() {
+          start.click()
+      }, 50);
+      display.innerHTML = '';
+  };
+  </script>
+
+  <!--EvoMe main script-->
+  <script src="js/index.js"></script>
+
+
 </html>

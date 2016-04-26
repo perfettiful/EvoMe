@@ -101,11 +101,8 @@ var Mutation = function(name, probability, mutate, isValid) {
   this.index = undefined;
 }
 
-//******************************************************************
+//*****  DNA constructor **************************************************
 var Dna = function(settings) {
-  /*
-      DNA constructor 
-  */
   "use strict"
   this.dna = [];
   this.max_polygon = settings["max_polygon"];
@@ -171,12 +168,12 @@ Dna.prototype.getFitnessWorker = function() {
   return new Worker(blobURL);
 };
 
-// web woker that we'll be using to do all our grunt work
+// web worker that we'll be using to do all our grunt work
 var WORKER = undefined;
 
 Dna.prototype.fitness = function(tData, workersComplete) {
   /*
-      Get a web worker to comput the fitness, better ui
+      Get a web worker to compute the fitness, better ui
   */
   "use strict"
   var self = this;
@@ -244,19 +241,22 @@ Dna.prototype.addPolygon = function() {
       Adds a randomly generated polygon to our DNA, either at specified index or at the end
   */
   "use strict"
-  var poly = new Polygon(), // polygon we'll be adding
-    num_points_add = utils.random(this.max_polygon_points - 3); // we know we need at least 3 points, so look for the number we can have above that
+  var poly = new Polygon(),
+  // polygon we'll be adding
+    num_points_add = utils.random(this.max_polygon_points - 3);
+  // we know we need at least 3 points, so look for the number we can have above that
 
   for (var i = 0; i < num_points_add + 3; i++) {
     var p = new Point().random(this.max_width, this.max_height);
     poly.addPoint(p);
   }
 
-  poly.color = utils.randomColorAlpha(Math.random()); // randomize alpha too?
+  poly.color = utils.randomColorAlpha(Math.random());
+  // randomize alpha too?
 
   var index = utils.random(this.dna.length);
   this.dna.splice(index, 0, poly);
-}
+};
 
 Dna.prototype.addPolygon_valid = function() {
   /*
