@@ -49,9 +49,28 @@ li {
   margin-bottom: 6px;
 }
 
+#inVSout{
+    height: 300px;
+    width: 410px;
+    display: table;
+    overflow: hidden;
+}
+
+#target{
+    width: 200px;
+    display: table-cell;
+    float: left;
+    border: 2px;
+}
+
+#c{
+    display: table-cell;
+    float: right;
+}
+
 #wrap {
   margin: 0 auto;
-  width: 950px;
+  width: 1370px;
   background: #fff;
 }
 
@@ -95,11 +114,14 @@ li {
 }
 
 #sidebar {
-  width: 210px;
+
+  width: 410px;
   float: right;
-  background: #FFF;
+  background: #7f7f7f;
   color: #666;
   margin-right: 20px;
+  overflow-y: auto;
+  height: 800px;
 }
 
 #sidebar .box {
@@ -109,9 +131,10 @@ li {
 }
 
 #sidebar h2 {
-  font-size: 1.2em;
+  font-size: 2em;
   font-weight: 100;
   padding: 3px;
+    color: #000;;
 }
 
 #content {
