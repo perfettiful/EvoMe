@@ -7,58 +7,48 @@
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
 </head>
 
-
   <body>
 <div id="wrap">
 	<div id="header">
 		<div id="headerlinks">
-		<a href="#" title="Portfolio">-EvoMe-</a>
-		<a href="#" title="Blog">-Gallery-    </a>
-		<a title="About Us">About:</a>
-		<a href="#" title="Contact">|Evolutionary Computation| </a>
-        <a href="#" title="Contact">|EvoLisa| </a>
-        <a href="#" title="Contact">|Creator|</a>
+		<a href="#" title="EvoMe">-EvoMe-</a>
+		<a href="#" title="Gallery">-Gallery-    </a>
+		<a title="About">About:</a>
+		<a href="#" title="EC">|Evolutionary Computation| </a>
+        <a href="https://rogeralsing.com/2008/12/07/genetic-programming-evolution-of-mona-lisa/" title="EvoLisa">|EvoLisa| </a>
+        <a href="https://perfettiful.github.io" title="Contact">|Creator|</a>
 		</div>
 		<h1><a href="#">EvoMe - Genetic Image Reconstruction</a></h1>
 	</div>
 
 	<div id="sidebar"> <!--SideBar Section-->
 		<h2>Evolutionary Progress:</h2>
-		<div class="box">
-		<ul>
-		<li><a href="#">--</a></li>
 
-            <div id="display"></div> <!--Output Location-->
-            </ul>
-            </div>
+		<div class="box">
+
+            <div id="display"></div> <!--EvoMe Display Loop Location-->
+
         </div>
+    </div>
 
 	<div id="content"> <!--Paragraph Section-->
+
+
+<br>
+        <br>
         <div id="container"> <!--Target img, Canvas & Controls Container-->
             <h1>Choose one of the sample images to evolve. . .</h1>
             <br>
             <table>
                 <tr>
-                    <td>
-                        <img src="img/evolisacap.JPG">
-                    </td>
-                    <td>
-                        <img src="img/3pups.jpg">
-                    </td>
-                    <td>
-                        <img src="img/tesselation.png">
-                    </td>
+                    <td><img src="img/evolisacap.JPG"></td>
+                    <td><img src="img/3pups.jpg"></td>
+                    <td><img src="img/tesselation.png"></td>
                 </tr>
                 <tr>
-                    <td>
-                        <label><input type="radio" name="option" value="Option 1">Mona Lisa</label>
-                    </td>
-                    <td>
-                        <label><input type="radio" name="option" value="Option 2">Puppies</label>
-                    </td>
-                    <td>
-                        <label><input type="radio" name="option" value="Option 2">Tessellation</label>
-                    </td>
+                    <td><label><input type="radio" name="opt1" onclick="check_value(1)" value="Option 1">Mona Lisa</label></td>
+                    <td><label><input type="radio" name="opt2" onclick="check_value(2)" value="Option 2">Puppies</label></td>
+                    <td><label><input type="button" name="opt3" onclick="check_value(3)" value="<>">Tessellation</label></td>
                 </tr>
             </table>
             <!--Image input-->
@@ -80,19 +70,61 @@
             <div id="inVsOut">
                 <table>
                     <tr>
+                        <td><h1>Target Image</h1></td>
+                        <td><h1>Evolving Image</h1></td>
+                    </tr>
+                    <tr>
                         <td>
-
-                    <div id="output">
-                        <output id="list"></output>
-                    </div>
+                            <div id="output">
+                        <div id="imagedest"></div>
+                            </div>
                         </td>
                         <td>
-                    <canvas id="c"></canvas>
+
+                            <div class="canvas__container">
+                                <canvas id="cnvs" class="canvas__canvas"></canvas>
+                                <img src="" id="mirror" class="canvas__mirror" />
+                            </div>
+
+                            <canvas id="c"></canvas><br>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <a href="#" class="button" id="btn-download" download="EvoMeOutput.png">Download</a>
                         </td>
                     </tr>
                     </table>
             </div>
+<script>
+    function selected(dis) {
+        var ele= document.getElementById('set');
+        if(dis.value =='Missing')
+        {ele.innerHTML ="MIssing something";}
+        else
+        {ele.innerHTML ="Correct";}
+    }
 
+    //check_value: fct
+    function check_value(fieldvalue) {
+        switch (fieldvalue) {
+            case 1:
+                document.getElementById("imagedest").innerHTML = "<output id='list'>";
+                break;
+            case 2:
+                document.getElementById("imagedest").innerHTML = "<img src='img/evolisacap.JPG'>";
+                break
+            case 3:
+                document.getElementById("imagedest").innerHTML = "<img src='img/3pups.jpg'>";
+                break;
+            case 4:
+                document.getElementById("imagedest").innerHTML = "<img src='img/tesselation.png'>";
+                break;
+        }
+    }
+    </script>
             <table>
                 <tr>
                     <td>FITNESS:</td>
@@ -346,10 +378,37 @@
 	</div>
 </div> <!--End Wrapper div-->
 
-
-
 <!--Scripts-->
 <script src="//d3js.org/d3.v3.min.js"></script> <!--D3 library-->
+
+<!--Img URL export to JPG-->
+<script>
+    var c = document.getElementById('c'),
+            ctx = c.getContext('2d'),
+            mirror = document.getElementById('mirror');
+
+
+    c.width = mirror.width = window.innerWidth;
+    c.height = mirror.height = window.innerHeight;
+
+    mirror.addEventListener('contextmenu', function (e) {
+        var dataURL = canvas.toDataURL('image/png');
+        mirror.src = dataURL;
+    });
+
+    var button = document.getElementById('btn-download');
+    button.addEventListener('click', function (e) {
+        var dataURL = canvas.toDataURL('image/png');
+        button.href = dataURL;
+    });
+
+    //Test Canvs w/ simple Rectangle
+    var canvas = document.getElementById("c");
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#FF0000";
+    ctx.fillRect(100, 100, 150, 75);
+
+</script>
 
   <!--64 bit Data img URL converter-->
   <script>
@@ -372,7 +431,7 @@
                       // Render thumbnail.
                       var span = document.createElement('span');
                       span.innerHTML = ['<img id="target" alt="" src="', e.target.result,
-                          '" title="', escape(theFile.name), '"/>'
+                          '" title="', (theFile.name), '"/>'
                       ].join('');
                       document.getElementById('list').insertBefore(span, null);
                   };
@@ -387,10 +446,13 @@
 
   <!--EvoMe html canvas & controls script-->
   <script type="text/javascript">//Controls Script
+
+  //Declaring var fitOutput, genOutput, polyOutput
   var fitOutput = document.getElementById('fitness'),
           genOutput = document.getElementById('generation'),
           polyOutput = document.getElementById('polygons');
-  //===================================
+
+  // displayEvolution: fct takes  ==========================
   var displayEvolution = function(evo, startTime) {
       var d = document.createElement('div'),
               c = document.createElement('canvas'),
@@ -410,22 +472,25 @@
       display.appendChild(d);
   };
 
-  var go = function() {
-      var t = document.getElementById('target'),
-              c = document.getElementById('c'),
-              evoLisa = new EvoLisa(t, c);
+  /*Defining evo(), fct that takes the target and canvas elements,
+  then defines evoLisa as the target and canvas ran through the EvoLisa constructor */
+  var evo = function() {
+      var tar = document.getElementById('target'),
+              canv = document.getElementById('c'),
+              evoLisa = new EvoLisa(tar, canv);
       return evoLisa;
   }
 
+  // Declaring evoLisa, start ,stop & reset
   var evoLisa,
           start = document.getElementById('start'),
           stop = document.getElementById('stop'),
           reset = document.getElementById('reset');
 
-  // set up our buttons
+  //=========== Start runs go()=============
   start.onclick = function() {
       if (typeof evoLisa === "undefined")
-          evoLisa = go();
+          evoLisa = evo();
 
       var startTime = new Date().getTime();
 
@@ -440,14 +505,14 @@
           }
       });
   };
-  //=======================================
+  //======Stop stops evoLisa ====================================
   stop.onclick = function() {
       evoLisa.stop();
   };
-  //========================================
+  //=======Reset stops evoLisa, then runs evo()==================
   reset.onclick = function() {
       evoLisa.stop();
-      evoLisa = go();
+      evoLisa = evo();
       setTimeout(function() {
           start.click()
       }, 50);

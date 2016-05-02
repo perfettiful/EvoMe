@@ -22,6 +22,25 @@ body {
   stroke-width: 1.5px;
 }
 
+.canvas__container {
+    height: 200px;
+    position: relative;
+    width: 200px;
+}
+.canvas__canvas {
+    height: 200px;
+    position: relative;
+    width: 200px;
+    z-index: 1;
+}
+.canvas__mirror {
+    height: 200px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 200px;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -54,6 +73,10 @@ li {
   margin-bottom: 6px;
 }
 
+#output{
+    height: 200px;
+    width: 200px;
+}
 #inVSout{
     height: 300px;
     width: 410px;

@@ -1,3 +1,55 @@
+//==================Start main EvoLisa Js script===================================
+
+//**********************************************************************
+var utils = {
+  random: function(n) {
+    return Math.floor(Math.random() * n)
+  },
+
+  randomColorAlpha: function(alpha) {
+    var color = "rgba(";
+    for (var i = 0; i < 3; i++) {
+      color += Math.floor(Math.random() * 256) + ",";
+    }
+    color += alpha + ")";
+    return color;
+  },
+
+  //Allows access to pixel data for a given image element
+  getImagePixelData: function(img) {
+    "use strict"
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    return ctx.getImageData(0, 0, img.width, img.height).data;
+  },
+
+  deepCopy: function(obj) {
+    if (Object.prototype.toString.call(obj) === '[object Array]') {
+      var out = [],
+          i = 0,
+          len = obj.length;
+      for (; i < len; i++) {
+        out[i] = arguments.callee(obj[i]);
+      }
+      return out;
+    }
+    if (typeof obj === 'object') {
+      var out = {},
+          i;
+      for (i in obj) {
+        out[i] = arguments.callee(obj[i]);
+      }
+      return out;
+    }
+    return obj;
+  }
+};
+
 
 var EvoLisa = function(target, canvas) {
   "use strict"
@@ -10,7 +62,9 @@ var EvoLisa = function(target, canvas) {
   this.c.height = this.c.style.height = this.t.height;
 
   this.settings = {
+    //change to dynamic variable for experimentation
     "max_polygon": 1000,
+    //change to dynamic variable for experimentation
     "max_polygon_points": 10,
     "max_width": this.t.width,
     "max_height": this.t.height
@@ -27,7 +81,7 @@ var EvoLisa = function(target, canvas) {
     p3 = new Point(this.t.width, this.t.height),
     p4 = new Point(this.t.width, 0);
   poly.points = [p1, p2, p3, p4];
-  poly.color = "rgba(255,255,255,1)";
+  poly.color = "rgba(128,128,128,.5)";
   this.dna.dna.push(poly);
 };
 
@@ -53,10 +107,9 @@ EvoLisa.prototype.stop = function() {
 };
 
 EvoLisa.prototype.step = function(callback) {
-  /*
-      Step function for web workes, sets up call backs
-  */
+  /*Step function for web workers, sets up call backs*/
   "use strict"
+
   if (this.running) {
     var child = utils.deepCopy(this.dna);
     child.mutate();
@@ -145,6 +198,8 @@ Dna.prototype.draw = function(c) {
 Dna.prototype.getFitnessWorker = function() {
   /*
       Worker to process the fitness (potential speed increase here by splitting the work?)
+
+   fit += Math.round(Math.sqrt(r*r + g*g + b*b)/(1.7321));
   */
   "use strict"
   var blob = new Blob([
@@ -158,7 +213,7 @@ Dna.prototype.getFitnessWorker = function() {
                 var r = tData[i] - cData[i];                            \
                 var g = tData[i+1] - cData[i+1];                        \
                 var b = tData[i+2] - cData[i+2];                        \
-                fit += r*r + g*g + b*b;                                 \
+                fit +=r*r + g*g + b*b; \
             }                                                           \
             self.postMessage(fit);                                      \
         }                                                               \
@@ -479,51 +534,3 @@ Polygon.prototype.draw = function(c) {
   ctx.fill();
 };
 
-//**********************************************************************
-var utils = {
-  random: function(n) {
-    return Math.floor(Math.random() * n)
-  },
-  randomColorAlpha: function(alpha) {
-    var color = "rgba(";
-    for (var i = 0; i < 3; i++) {
-      color += Math.floor(Math.random() * 256) + ",";
-    }
-    color += alpha + ")";
-    return color;
-  },
-  getImagePixelData: function(img) {
-    /*
-        Allows access to pixel data for a given image element
-    */
-    "use strict"
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-
-    return ctx.getImageData(0, 0, img.width, img.height).data;
-  },
-  deepCopy: function(obj) {
-    if (Object.prototype.toString.call(obj) === '[object Array]') {
-      var out = [],
-        i = 0,
-        len = obj.length;
-      for (; i < len; i++) {
-        out[i] = arguments.callee(obj[i]);
-      }
-      return out;
-    }
-    if (typeof obj === 'object') {
-      var out = {},
-        i;
-      for (i in obj) {
-        out[i] = arguments.callee(obj[i]);
-      }
-      return out;
-    }
-    return obj;
-  }
-};
