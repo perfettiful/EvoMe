@@ -42,8 +42,8 @@
                     <td><img id="Mondrian" src="img/Mondrian.jpg"></td>
                 </tr>
                 <tr>
-                    <td><label><input type="radio" name="opt1" onclick="loadTargetImg(2);loadImgSrc(2)" value="<|>">Mona Lisa</label></td>
-                    <td><label><input type="radio" name="opt2" onclick="loadTargetImg(3);loadImgSrc(3)" value="<|>">Puppies</label></td>
+                    <td><label><input type="button" name="opt1" onclick="loadTargetImg(2);loadImgSrc(2)" value="<|>">Mona Lisa</label></td>
+                    <td><label><input type="button" name="opt2" onclick="loadTargetImg(3);loadImgSrc(3)" value="<|>">Puppies</label></td>
                     <td><label><input type="button" name="opt3" onclick="loadTargetImg(4);loadImgSrc(4)" value="<|>">Tessellation</label></td>
                     <td><label><input type="button" name="opt4" onclick="loadTargetImg(5);loadImgSrc(5)" value="<|>">Mondrian</label></td>
 
@@ -58,10 +58,6 @@
                 <input type="button" name="" onclick="loadImgSrc(1)" value="<|>">Click to Load Your Files<br>
             </div>
             <br>
-
-            <h1>Loaded Img to be Targeted:</h1>
-            <img id="evoInput">
-            <br>
             <table id="controlButtons">
                 <tr>
                 <td><a href="javascript:void(0);" id="start">Start</a></td>
@@ -74,23 +70,42 @@
             <div id="inVsOut">
                 <table>
                     <tr>
+                        <td><h1>Loaded Image</h1></td>
                         <td><h1>Target Image</h1></td>
                         <td><h1>Evolving Image</h1></td>
+                        <td><h1>Evolution Metrics</h1></td>
                     </tr>
                     <tr>
                         <td>
-
-                        <div id="imagedest"></div>
-
+                            <div style="width: 200px;"><img id="evoInput"></div>
                         </td>
                         <td>
-
-
+                            <div id="imagedest"></div>
+                        </td>
+                        <td>
                             <canvas id="c"></canvas><br>
 
                         </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>AVG %ERR:</td>
+                                    <td><span id="fitness">0</span></td>
+                                </tr>
+                                <tr>
+                                    <td>GENs:</td>
+                                    <td><span id="generation">0</span></td>
+                                </tr>
+                                <tr>
+                                    <td>POLYs:</td>
+                                    <td><span id="polygons">0</span></td>
+                                </tr>
+                            </table>
+                            <br/>
+                        </td>
                     </tr>
                     <tr>
+                        <td></td>
                         <td>
                             <div class="canvas__container" >
                                 <canvas id="cnvs" class="canvas__canvas"></canvas>
@@ -101,6 +116,7 @@
                         </td>
                     </tr>
                     </table>
+
             </div>
 <script>
 
@@ -158,21 +174,7 @@
 
 
     </script>
-            <table>
-                <tr>
-                    <td>FITNESS:</td>
-                    <td><span id="fitness">0</span></td>
-                </tr>
-                <tr>
-                    <td>GENERATION:</td>
-                    <td><span id="generation">0</span></td>
-                </tr>
-                <tr>
-                    <td>POLYGONS:</td>
-                    <td><span id="polygons">0</span></td>
-                </tr>
-            </table>
-            <br/>
+
             <div>
                 <p>Kernel Density Estimation</p>
                 <!--Kernel Plot script, needs to be in position of display!
@@ -543,7 +545,7 @@
           fitOutput.innerHTML = evoLisa.dna.fit;
           polyOutput.innerHTML = evoLisa.dna.dna.length;
           // shall we display another snapshot?
-          if (evoLisa.generation % 500 == 0) {
+          if (evoLisa.generation == 1 || evoLisa.generation % 500 == 0){
               displayEvolution(evoLisa, startTime);
           }
       });

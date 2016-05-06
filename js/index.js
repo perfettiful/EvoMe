@@ -63,7 +63,7 @@ var EvoLisa = function(target, canvas) {
 
   this.settings = {
     //change to dynamic variable for experimentation
-    "max_polygon": 1000,
+    "max_polygon": 100,
     //change to dynamic variable for experimentation
     "max_polygon_points": 10,
     "max_width": this.t.width,
@@ -210,12 +210,13 @@ Dna.prototype.getFitnessWorker = function() {
                 cData = e.data.cData,                                   \
                 tData = e.data.tData;                                   \
             for (var i=0; i<cData.length; i+=4) {                       \
-                var r = tData[i] - cData[i];                            \
-                var g = tData[i+1] - cData[i+1];                        \
-                var b = tData[i+2] - cData[i+2];                        \
-                fit +=r*r + g*g + b*b; \
+                var r = (tData[i] - cData[i])/255;                            \
+                var g = (tData[i+1] - cData[i+1])/255;                        \
+                var b = (tData[i+2] - cData[i+2])/255;                        \
+                fit += (Math.sqrt(r*r + g*g + b*b)/(1.7321))/2; \
             }                                                           \
-            self.postMessage(fit);                                      \
+            self.postMessage(fit); \
+                                                 \
         }                                                               \
         "
   ]);
