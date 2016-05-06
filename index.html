@@ -23,40 +23,44 @@
 
 	<div id="sidebar"> <!--SideBar Section-->
 		<h2>Evolutionary Progress:</h2>
-
 		<div class="box">
-
             <div id="display"></div> <!--EvoMe Display Loop Location-->
-
         </div>
     </div>
 
 	<div id="content"> <!--Paragraph Section-->
-
-
-<br>
+        <br>
         <br>
         <div id="container"> <!--Target img, Canvas & Controls Container-->
             <h1>Choose one of the sample images to evolve. . .</h1>
             <br>
             <table>
                 <tr>
-                    <td><img src="img/evolisacap.JPG"></td>
-                    <td><img src="img/3pups.jpg"></td>
-                    <td><img src="img/tesselation.png"></td>
+                    <td><img id="Lisa" src="img/evolisacap.JPG"></td>
+                    <td><img id= "Pups" src="img/3pups.jpg"></td>
+                    <td><img id="Tesselation" src="img/tesselation.png"></td>
+                    <td><img id="Mondrian" src="img/Mondrian.jpg"></td>
                 </tr>
                 <tr>
-                    <td><label><input type="radio" name="opt1" onclick="check_value(1)" value="Option 1">Mona Lisa</label></td>
-                    <td><label><input type="radio" name="opt2" onclick="check_value(2)" value="Option 2">Puppies</label></td>
-                    <td><label><input type="button" name="opt3" onclick="check_value(3)" value="<>">Tessellation</label></td>
-                </tr>
+                    <td><label><input type="radio" name="opt1" onclick="loadTargetImg(2);loadImgSrc(2)" value="<|>">Mona Lisa</label></td>
+                    <td><label><input type="radio" name="opt2" onclick="loadTargetImg(3);loadImgSrc(3)" value="<|>">Puppies</label></td>
+                    <td><label><input type="button" name="opt3" onclick="loadTargetImg(4);loadImgSrc(4)" value="<|>">Tessellation</label></td>
+                    <td><label><input type="button" name="opt4" onclick="loadTargetImg(5);loadImgSrc(5)" value="<|>">Mondrian</label></td>
+
             </table>
             <!--Image input-->
             <br>
             <h1>Or, choose your own image (preferably 200px by 200px)</h1>
             <div>
-                <input type="file" id="files" name="files[]" multiple>
+
+                <input type="file" id="files" name="files[]" multiple onclick="loadTargetImg(1)" value = "<|>"><br>
+
+                <input type="button" name="" onclick="loadImgSrc(1)" value="<|>">Click to Load Your Files<br>
             </div>
+            <br>
+
+            <h1>Loaded Img to be Targeted:</h1>
+            <img id="evoInput">
             <br>
             <table id="controlButtons">
                 <tr>
@@ -75,55 +79,84 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="output">
+
                         <div id="imagedest"></div>
-                            </div>
+
                         </td>
                         <td>
 
-                            <div class="canvas__container">
-                                <canvas id="cnvs" class="canvas__canvas"></canvas>
-                                <img src="" id="mirror" class="canvas__mirror" />
-                            </div>
 
                             <canvas id="c"></canvas><br>
 
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
                         <td>
-                            <a href="#" class="button" id="btn-download" download="EvoMeOutput.png">Download</a>
+                            <div class="canvas__container" >
+                                <canvas id="cnvs" class="canvas__canvas"></canvas>
+                                <img src="" id="mirror" class="canvas__mirror" />
+                            </div></td>
+                        <td>
+                            <a href="#" class="button" id="btn-download" download="EvoMeOutput.png">Download as PNG</a>
                         </td>
                     </tr>
                     </table>
             </div>
 <script>
-    function selected(dis) {
-        var ele= document.getElementById('set');
-        if(dis.value =='Missing')
-        {ele.innerHTML ="MIssing something";}
-        else
-        {ele.innerHTML ="Correct";}
-    }
 
-    //check_value: fct
-    function check_value(fieldvalue) {
-        switch (fieldvalue) {
+    function loadImgSrc(imgSrc) {
+        switch (imgSrc) {
             case 1:
-                document.getElementById("imagedest").innerHTML = "<output id='list'>";
+                document.getElementById("evoInput").src = document.getElementById("target").src;
                 break;
             case 2:
-                document.getElementById("imagedest").innerHTML = "<img src='img/evolisacap.JPG'>";
+                document.getElementById("evoInput").src = "img/evolisacap.JPG";
                 break
             case 3:
-                document.getElementById("imagedest").innerHTML = "<img src='img/3pups.jpg'>";
+                document.getElementById("evoInput").src = "img/3pups.jpg";
                 break;
             case 4:
-                document.getElementById("imagedest").innerHTML = "<img src='img/tesselation.png'>";
+                document.getElementById("evoInput").src = "img/tesselation.png";
                 break;
+            case 5:
+                document.getElementById("evoInput").src = "img/Mondrian.jpg";
+                break;
+
         }
     }
+
+        function selected(dis) {
+            var ele = document.getElementById('set');
+            if (dis.value == 'Missing') {
+                ele.innerHTML = "MIssing something";
+            }
+            else {
+                ele.innerHTML = "Correct";
+            }
+        }
+
+        //check_value: fct
+        function loadTargetImg(fieldvalue) {
+            switch (fieldvalue) {
+                case 1:
+                    document.getElementById("imagedest").innerHTML = "<output id='list'>";
+                    break;
+                case 2:
+                    document.getElementById("imagedest").innerHTML = "<img src='img/evolisacap.JPG'>";
+                    break
+                case 3:
+                    document.getElementById("imagedest").innerHTML = "<img src='img/3pups.jpg'>";
+                    break;
+                case 4:
+                    document.getElementById("imagedest").innerHTML = "<img src='img/tesselation.png'>";
+                    break;
+                case 5:
+                    document.getElementById("imagedest").innerHTML = "<img src='img/Mondrian.jpg'>";
+                    break;
+            }
+        }
+
+
     </script>
             <table>
                 <tr>
@@ -357,15 +390,9 @@
             <div id="controls">
 
                 <!-- Evo metrics & control panel-->
-                <div class="info">
-
-
-                </div>
-
+                <div class="info"></div>
             </div>
         </div>
-
-
 	</div>
 
 	<div id="footer">
@@ -430,7 +457,7 @@
                   return function(e) {
                       // Render thumbnail.
                       var span = document.createElement('span');
-                      span.innerHTML = ['<img id="target" alt="" src="', e.target.result,
+                      span.innerHTML = ['<br><img id="target" alt="" src="', e.target.result,
                           '" title="', (theFile.name), '"/>'
                       ].join('');
                       document.getElementById('list').insertBefore(span, null);
@@ -452,30 +479,43 @@
           genOutput = document.getElementById('generation'),
           polyOutput = document.getElementById('polygons');
 
-  // displayEvolution: fct takes  ==========================
+  /*displayEvolution: fct takes an EvoLisa constructor (with target & output canvas)
+    and a start time and output the gradual progress of evolution in the sidebar*/
   var displayEvolution = function(evo, startTime) {
-      var d = document.createElement('div'),
-              c = document.createElement('canvas'),
+      var div = document.createElement('div'),
+              can = document.createElement('canvas'),
               display = document.getElementById('display');
 
-      c.width = evoLisa.t.width;
-      c.height = evoLisa.t.height;
-      c.style.width = c.width * 3 / 5 + "px";
-      c.style.height = c.height * 3 / 5 + "px";
-      evo.draw(c);
-      d.className = "container";
+      can.width = evoLisa.t.width;
+      can.height = evoLisa.t.height;
+
+      //Scales output img to 40% of size and adds running imgs to sidebar
+      can.style.width = can.width * 2 / 5 + "px";
+      can.style.height = can.height * 2 / 5 + "px";
+
+      evo.draw(can);
+      div.className = "container";
+
+      //Vars to fill progress sidebar
       var gen = evoLisa.generation,
+              poly = evoLisa.dna.dna.length,
               fit = evoLisa.dna.fit,
               timeTaken = new Date().getTime() - startTime;
-      d.innerHTML = "<div class='info'>g: " + gen + "<br/>f: " + fit + "<br />t: " + timeTaken + "</div>";
-      d.appendChild(c);
-      display.appendChild(d);
+
+      div.innerHTML = "<div class='info'>gen: " + gen + "<br/>fit: " + fit + "<br />poly: " + poly + "<br />t: " + timeTaken + "</div>";
+
+      div.appendChild(can);
+      display.appendChild(div);
+
+     // collectData();
+      console.log(gen, fit, poly);
   };
 
   /*Defining evo(), fct that takes the target and canvas elements,
   then defines evoLisa as the target and canvas ran through the EvoLisa constructor */
   var evo = function() {
-      var tar = document.getElementById('target'),
+
+      var tar = document.getElementById("evoInput"),
               canv = document.getElementById('c'),
               evoLisa = new EvoLisa(tar, canv);
       return evoLisa;
@@ -489,6 +529,9 @@
 
   //=========== Start runs go()=============
   start.onclick = function() {
+
+     var dataCollect = true;
+
       if (typeof evoLisa === "undefined")
           evoLisa = evo();
 
@@ -507,7 +550,10 @@
   };
   //======Stop stops evoLisa ====================================
   stop.onclick = function() {
+
       evoLisa.stop();
+      dataCollect = false;
+
   };
   //=======Reset stops evoLisa, then runs evo()==================
   reset.onclick = function() {
@@ -518,7 +564,70 @@
       }, 50);
       display.innerHTML = '';
   };
-  </script>
+  //
+
+//Script to export evo data from JS array to CSV-->
+  var collectData = function() {
+
+      var gen = evoLisa.generation,
+              poly = evoLisa.dna.dna.length,
+              fit = evoLisa.dna.fit;
+
+      //Generate data array of arrays with first row as array of column headers
+
+
+      evoDataHeaders = ["Generation", "Fitness", "Polygons"];
+      evoData = [evoDataHeaders];
+
+      //Push each new row to main array
+
+      while (dataCollect = true) {
+          evoData.push([gen, fit, poly]);
+      }
+  };
+    //Export running data array to CSV
+  var exportToCsv = function(filename, rows) {
+      var processRow = function (row) {
+          var finalVal = '';
+          for (var j = 0; j < row.length; j++) {
+              var innerValue = row[j] === null ? '' : row[j].toString();
+              if (row[j] instanceof Date) {
+                  innerValue = row[j].toLocaleString();
+              }
+              ;
+              var result = innerValue.replace(/"/g, '""');
+              if (result.search(/("|,|\n)/g) >= 0)
+                  result = '"' + result + '"';
+              if (j > 0)
+                  finalVal += ',';
+              finalVal += result;
+          }
+          return finalVal + '\n';
+      };
+
+      var csvFile = '';
+      for (var i = 0; i < rows.length; i++) {
+          csvFile += processRow(rows[i]);
+      }
+
+      var blob = new Blob([csvFile], {type: 'text/csv;charset=utf-8;'});
+      if (navigator.msSaveBlob) { // IE 10+
+          navigator.msSaveBlob(blob, filename);
+      } else {
+          var link = document.createElement("a");
+          if (link.download !== undefined) { // feature detection
+              // Browsers that support HTML5 download attribute
+              var url = URL.createObjectURL(blob);
+              link.setAttribute("href", url);
+              link.setAttribute("download", filename);
+              link.style.visibility = 'hidden';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+          }
+      }
+  };
+</script>
 
   <!--EvoMe main script-->
   <script src="js/index.js"></script>

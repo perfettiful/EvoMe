@@ -23,22 +23,23 @@ body {
 }
 
 .canvas__container {
-    height: 200px;
+    height: 20px;
     position: relative;
-    width: 200px;
+    width: 20px;
+    visibility: hidden;
 }
 .canvas__canvas {
-    height: 200px;
+    height: 20px;
     position: relative;
-    width: 200px;
+    width: 20px;
     z-index: 1;
 }
 .canvas__mirror {
-    height: 200px;
+    height: 20px;
     left: 0;
     position: absolute;
     top: 0;
-    width: 200px;
+    width: 20px;
 }
 
 .axis path,
@@ -84,7 +85,7 @@ li {
     overflow: hidden;
 }
 
-#target{
+#imagedest {
     width: 200px;
     display: table-cell;
     float: left;
@@ -98,7 +99,7 @@ li {
 
 #wrap {
   margin: 0 auto;
-  width: 1370px;
+  width: 1500px;
   background: #fff;
 }
 
@@ -143,7 +144,7 @@ li {
 
 #sidebar {
 
-  width: 410px;
+  width: 380px;
   float: right;
   background: #7f7f7f;
   color: #666;
