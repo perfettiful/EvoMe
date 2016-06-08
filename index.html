@@ -60,6 +60,10 @@
             <br>
             <table id="controlButtons">
                 <tr>
+                    Max # Polygons to Use:<input id="maxPolysInput" type="text" value="100"><br>
+                    Max # Vertices Per Polygon::<input id="maxPtsInput" type="text" value="10"><br>
+                </tr>
+                <tr>
                 <td><a href="javascript:void(0);" id="start">Start</a></td>
                 <td><a href="javascript:void(0);" id="stop">Stop</a></td>
                 <td><a href="javascript:void(0);" id="reset">Reset</a></td>
@@ -410,7 +414,7 @@
 <!--Scripts-->
 <script src="//d3js.org/d3.v3.min.js"></script> <!--D3 library-->
 
-<!--Img URL export to JPG-->
+<!--Img URL export to PNG-->
 <script>
     var c = document.getElementById('c'),
             ctx = c.getContext('2d'),
@@ -434,8 +438,8 @@
     //Test Canvs w/ simple Rectangle
     var canvas = document.getElementById("c");
     var ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#FF0000";
-    ctx.fillRect(100, 100, 150, 75);
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, 10, 10);
 
 </script>
 
@@ -491,15 +495,16 @@
       can.width = evoLisa.t.width;
       can.height = evoLisa.t.height;
 
-      //Scales output img to 40% of size and adds running imgs to sidebar
-      can.style.width = can.width * 2 / 5 + "px";
-      can.style.height = can.height * 2 / 5 + "px";
+      //Scales output img to 60% of size and adds running imgs to sidebar
+      can.style.width = can.width * 3 / 5 + "px";
+      can.style.height = can.height * 3 / 5 + "px";
 
       evo.draw(can);
       div.className = "container";
 
       //Vars to fill progress sidebar
       var gen = evoLisa.generation,
+              log10Gen = Math.log(gen,10),
               poly = evoLisa.dna.dna.length,
               fit = evoLisa.dna.fit,
               timeTaken = new Date().getTime() - startTime;
@@ -510,7 +515,8 @@
       display.appendChild(div);
 
      // collectData();
-      console.log(gen, fit, poly);
+
+      console.log(gen+","+log10Gen+","+fit+","+poly);
   };
 
   /*Defining evo(), fct that takes the target and canvas elements,
@@ -519,7 +525,11 @@
 
       var tar = document.getElementById("evoInput"),
               canv = document.getElementById('c'),
-              evoLisa = new EvoLisa(tar, canv);
+              maxPolys = document.getElementById('maxPolysInput').value,
+              maxPts = document.getElementById('maxPtsInput').value,
+              evoLisa = new EvoLisa(tar, canv, maxPolys, maxPts);
+      console.log("Max Polys:"+maxPolys+" Max Pts Per Poly:"+maxPts);
+      console.log("Gen, Log10(Gen) Fitness, Polygon");
       return evoLisa;
   }
 
@@ -545,7 +555,7 @@
           fitOutput.innerHTML = evoLisa.dna.fit;
           polyOutput.innerHTML = evoLisa.dna.dna.length;
           // shall we display another snapshot?
-          if (evoLisa.generation == 1 || evoLisa.generation % 500 == 0){
+          if (evoLisa.generation >= 1 && evoLisa.generation <= 499 || evoLisa.generation % 500 == 0){
               displayEvolution(evoLisa, startTime);
           }
       });

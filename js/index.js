@@ -17,7 +17,7 @@ var utils = {
 
   //Allows access to pixel data for a given image element
   getImagePixelData: function(img) {
-    "use strict"
+    "use strict";
     var canvas = document.createElement("canvas");
     canvas.width = img.width;
     canvas.height = img.height;
@@ -51,8 +51,8 @@ var utils = {
 };
 
 
-var EvoLisa = function(target, canvas) {
-  "use strict"
+var EvoLisa = function(target, canvas, maxPolys, maxPts) {
+  "use strict";
   this.t = target; // image we're mutating towards
   this.c = canvas; // canvas we're drawing on
   this.running = false;
@@ -63,9 +63,9 @@ var EvoLisa = function(target, canvas) {
 
   this.settings = {
     //change to dynamic variable for experimentation
-    "max_polygon": 100,
+    "max_polygon": maxPolys,
     //change to dynamic variable for experimentation
-    "max_polygon_points": 10,
+    "max_polygon_points": maxPts,
     "max_width": this.t.width,
     "max_height": this.t.height
   };
@@ -89,7 +89,7 @@ EvoLisa.prototype.start = function(callback) {
   /*
       Entry point for evolution with web workers
   */
-  "use strict"
+  "use strict";
   this.running = true;
   this.dna.mutate();
   var self = this;
@@ -102,13 +102,13 @@ EvoLisa.prototype.stop = function() {
   /*
       stop the mutations 
   */
-  "use strict"
+  "use strict";
   this.running = false;
 };
 
 EvoLisa.prototype.step = function(callback) {
   /*Step function for web workers, sets up call backs*/
-  "use strict"
+  "use strict";
 
   if (this.running) {
     var child = utils.deepCopy(this.dna);
@@ -134,7 +134,7 @@ EvoLisa.prototype.draw = function(c) {
   /*
       Ouput our dna to our canvas
   */
-  "use strict"
+  "use strict";
   if (typeof c == "undefined")
     this.dna.draw(this.c);
   else
@@ -146,17 +146,17 @@ var Mutation = function(name, probability, mutate, isValid) {
   /*
       Create a common interface for the mutations
   */
-  "use strict"
+  "use strict";
   this.name = name;
   this.probability = probability;
   this.mutate = mutate;
   this.isValid = isValid;
   this.index = undefined;
-}
+};
 
 //*****  DNA constructor **************************************************
 var Dna = function(settings) {
-  "use strict"
+  "use strict";
   this.dna = [];
   this.max_polygon = settings["max_polygon"];
   this.max_polygon_points = settings["max_polygon_points"];
@@ -173,7 +173,7 @@ var Dna = function(settings) {
     new Mutation("addPoint", 1 / 1500, Dna.prototype.addPoint, Dna.prototype.addPoint_valid),
     new Mutation("removePoint", 1 / 1500, Dna.prototype.removePoint, Dna.prototype.removePoint_valid),
     new Mutation("movePoint", 1 / 1500, Dna.prototype.movePoint, Dna.prototype.movePoint_valid),
-    new Mutation("recolour", 1 / 1500, Dna.prototype.recolour, Dna.prototype.recolour_valid),
+    new Mutation("recolour", 1 / 1500, Dna.prototype.recolour, Dna.prototype.recolour_valid)
 
     /*
     new Mutation("recolourRed", 1/1500, Dna.prototype.recolourRed, Dna.prototype.recolour_valid),
@@ -188,7 +188,7 @@ Dna.prototype.draw = function(c) {
   /*
       Output dna to canvas
   */
-  "use strict"
+  "use strict";
   var ctx = c.getContext("2d");
   ctx.clearRect(0, 0, c.width, c.height);
   for (var i = 0; i < this.dna.length; i++)
@@ -201,19 +201,20 @@ Dna.prototype.getFitnessWorker = function() {
 
    fit += Math.round(Math.sqrt(r*r + g*g + b*b)/(1.7321));
   */
-  "use strict"
+  "use strict";
   var blob = new Blob([
     "                                                               \
         self.onmessage = function(e) {                                  \
             var fit = 0,                                                \
                 p = 0,                                                  \
                 cData = e.data.cData,                                   \
-                tData = e.data.tData;                                   \
+                tData = e.data.tData;\
+                                                   \
             for (var i=0; i<cData.length; i+=4) {                       \
                 var r = (tData[i] - cData[i])/255;                            \
                 var g = (tData[i+1] - cData[i+1])/255;                        \
                 var b = (tData[i+2] - cData[i+2])/255;                        \
-                fit += (Math.sqrt(r*r + g*g + b*b)/(1.7321))/2; \
+                fit += (Math.sqrt(r*r + g*g + b*b)/(1.7321)*.0025); \
             }                                                           \
             self.postMessage(fit); \
                                                  \
@@ -231,7 +232,7 @@ Dna.prototype.fitness = function(tData, workersComplete) {
   /*
       Get a web worker to compute the fitness, better ui
   */
-  "use strict"
+  "use strict";
   var self = this;
 
   if (typeof WORKER === "undefined") {
@@ -242,7 +243,7 @@ Dna.prototype.fitness = function(tData, workersComplete) {
     self.fit = e.data;
     if (typeof workersComplete === "function")
       workersComplete.apply(self);
-  }
+  };
 
   var c = document.createElement('canvas');
   c.width = c.style.width = this.max_width;
@@ -277,7 +278,7 @@ Dna.prototype.mutate = function() {
           mutation.mutate.apply(this);
         }
       }
-    }, this)
+    }, this);
 
     this.dna.forEach(function(chromosone, index) {
       this.polygonMutations.forEach(function(mutation) {
@@ -296,7 +297,7 @@ Dna.prototype.addPolygon = function() {
   /*
       Adds a randomly generated polygon to our DNA, either at specified index or at the end
   */
-  "use strict"
+  "use strict";
   var poly = new Polygon(),
   // polygon we'll be adding
     num_points_add = utils.random(this.max_polygon_points - 3);
@@ -318,15 +319,15 @@ Dna.prototype.addPolygon_valid = function() {
   /*
       Can a polygon be added to our dna?
   */
-  "use strict"
+  "use strict";
   return this.dna.length < this.max_polygon;
-}
+};
 
 Dna.prototype.movePolygon = function() {
   /*
       randomly pick a polygon and move it somewhere else in the dna string
   */
-  "use strict"
+  "use strict";
   var index = utils.random(this.dna.length),
     poly = this.dna.splice(index, 1)[0];
   index = utils.random(this.dna.length);
@@ -337,7 +338,7 @@ Dna.prototype.movePolygon_valid = function(dna, settings) {
   /*
       Remvoes a polygon from a given index
   */
-  "use strict"
+  "use strict";
   return dna.length > 1;
 };
 
@@ -345,15 +346,15 @@ Dna.prototype.removePolygon = function(index) {
   /*
       Remvoes a polygon from a given index
   */
-  "use strict"
+  "use strict";
   this.dna.splice(utils.random(this.dna.length), 1);
-}
+};
 
 Dna.prototype.removePolygon_valid = function() {
   /*
       can a polygon be removed from our dna?
   */
-  "use strict"
+  "use strict";
   return this.dna.length > 0;
 };
 
@@ -361,7 +362,7 @@ Dna.prototype.recolour = function(index) {
   /*
       only case we can't recolour is when we don't actually have any polygons 
   */
-  "use strict"
+  "use strict";
   this.dna[index].color = utils.randomColorAlpha(Math.random());
 };
 
@@ -369,7 +370,7 @@ Dna.prototype.recolour_valid = function() {
   /*
       only case we can't recolour is when we don't actually have any polygons 
   */
-  "use strict"
+  "use strict";
   return this.dna.length > 0;
 };
 
@@ -377,7 +378,7 @@ Dna.prototype.recolourRGBA = function(index, part) {
   /*
       change a portion of our color
   */
-  "use strict"
+  "use strict";
   var color = this.dna[index].color,
     rgb = color.substring(4, color.length - 1)
     .replace(/ /g, '')
@@ -390,13 +391,13 @@ Dna.prototype.recolourRGBA = function(index, part) {
 
   rgb[part] = replacement;
   this.dna[index].color = "rgba(" + rgb.join(",") + ")";
-}
+};
 
 Dna.prototype.recolourRed = function(index) {
   /*
       recolour red
   */
-  "use strict"
+  "use strict";
   this.recolourRGBA(index, 0);
 };
 
@@ -404,7 +405,7 @@ Dna.prototype.recolourGreen = function(index) {
   /*
       recolour green
   */
-  "use strict"
+  "use strict";
   this.recolourRGBA(index, 1);
 };
 
@@ -412,7 +413,7 @@ Dna.prototype.recolourBlue = function(index) {
   /*
       recolour blue
   */
-  "use strict"
+  "use strict";
   this.recolourRGBA(index, 2);
 };
 
@@ -420,7 +421,7 @@ Dna.prototype.recolourAlpha = function(index) {
   /*
       recolour alpha
   */
-  "use strict"
+  "use strict";
   this.recolourRGBA(index, 3);
 };
 
@@ -428,7 +429,7 @@ Dna.prototype.addPoint = function(index) {
   /*
       move a point to the polygon at the given index
   */
-  "use strict"
+  "use strict";
   var p = new Point().random(this.max_width, this.max_height);
   this.dna[index].addPoint(p);
 };
@@ -446,7 +447,7 @@ Dna.prototype.removePoint = function(index) {
   /*
       remove a random point
   */
-  "use strict"
+  "use strict";
   this.dna[index].points.splice(utils.random(this.dna[index].points.length), 1);
 };
 
@@ -454,7 +455,7 @@ Dna.prototype.removePoint_valid = function(index) {
   /*
       can we remove a point?
   */
-  "use strict"
+  "use strict";
   if (this.dna.length > 0)
     return this.dna[index].points.length > 3;
   return false;
@@ -464,7 +465,7 @@ Dna.prototype.movePoint = function(index) {
   /*
       Give a random point new coords
   */
-  "use strict"
+  "use strict";
   var point_index = utils.random(this.dna[index].points.length);
   this.dna[index].points[point_index].x = utils.random(this.max_width);
   this.dna[index].points[point_index].y = utils.random(this.max_height);
@@ -479,7 +480,7 @@ Dna.prototype.movePoint_valid = function() {
 
 //*************************************************************
 var Point = function(x, y) {
-  "use strict"
+  "use strict";
   this.x = x;
   this.y = y;
 };
@@ -496,7 +497,7 @@ var Polygon = function() {
   /*
       Polygon constructor
   */
-  "use strict"
+  "use strict";
   this.points = [];
   this.color = null;
 };
@@ -505,9 +506,9 @@ Polygon.prototype.addPoint = function(p, index) {
   /*
       Add a point to our polygon, either at the end or at the supplied index
   */
-  "use strict"
-  if (typeof index == "undefined")
-    this.points.push(p);
+  "use strict";
+    if (typeof index == "undefined")
+        this.points.push(p);
   else
   // add the point as a specific index
     this.points.push.splice(index, 0, p)
@@ -517,7 +518,7 @@ Polygon.prototype.draw = function(c) {
   /*
       Draw polygon on the supplied canvas
   */
-  "use strict"
+  "use strict";
   var ctx = c.getContext("2d");
   // set the color
   ctx.fillStyle = this.color;
@@ -527,11 +528,16 @@ Polygon.prototype.draw = function(c) {
   ctx.moveTo(this.points[0].x, this.points[0].y);
 
   // draw polygon
-  for (var i = 0; i < this.points.length; i++) {
-    var p = this.points[i];
-    ctx.lineTo(p.x, p.y);
+  for (var i = 0; i < this.points.length-1; i++) {
+    var p = this.points[i], pTo = this.points[i+1];
+    //ctx.lineTo(p.x, p.y);
+    ctx.quadraticCurveTo(p.x, p.y,pTo.x, pTo.y);
+      //ctx.arcTo(p.x, p.y,pTo.x,pTo.y,10);
+      //console.log(typeof pTo.x);
   }
   ctx.closePath();
+    //ctx.strokeStyle(opacity = "1");
+    //ctx.stroke();
   ctx.fill();
 };
 
